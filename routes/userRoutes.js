@@ -2,7 +2,7 @@ const express = require("express");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-
+const authMiddleware = require("../middleware/authMiddleware");
 const router = express.Router();
 
 // Đăng ký
@@ -68,11 +68,12 @@ router.post("/login", async (req, res) => {
   
 
 // Lấy thông tin cá nhân
-router.get("/:id", async (req, res) => {
+router.get("/profile", authMiddleware, async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
-    if (!user) return res.status(404).json({ message: "Không tìm thấy người dùng" });
-
+    const user = await User.findById(req.user.id).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "Người dùng không tồn tại" });
+    }
     res.json(user);
   } catch (err) {
     res.status(500).json({ message: "Lỗi server" });

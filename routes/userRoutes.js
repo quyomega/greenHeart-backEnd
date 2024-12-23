@@ -70,13 +70,19 @@ router.post("/login", async (req, res) => {
 // Lấy thông tin cá nhân
 router.get("/profile", authMiddleware, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select("-password");
+    const user = await User.findById(req.user.id); // req.user.id sẽ có từ middleware auth
     if (!user) {
-      return res.status(404).json({ message: "Người dùng không tồn tại" });
+      return res.status(404).json({ message: "User not found" });
     }
-    res.json(user);
+    res.json({
+      name: user.name,
+      email: user.email,
+      points: user.points,
+      level: user.level,
+       // Thêm các thông tin khác nếu có
+    });
   } catch (err) {
-    res.status(500).json({ message: "Lỗi server" });
+    res.status(500).json({ message: "Server error" });
   }
 });
 

@@ -4,6 +4,23 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const authMiddleware = require("../middleware/authMiddleware");
 const router = express.Router();
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = path.join(__dirname, "../uploads");
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
+
+const upload = multer({ storage });
 
 // Đăng ký
 router.post("/register", async (req, res) => {
@@ -79,11 +96,59 @@ router.get("/profile", authMiddleware, async (req, res) => {
       email: user.email,
       points: user.points,
       level: user.level,
-       // Thêm các thông tin khác nếu có
+      phone: user.phone,
+      address: user.address,
+      avatar: user.avatar
     });
   } catch (err) {
     res.status(500).json({ message: "Server error" });
   }
 });
+//Chỉnh sửa thông tin người dùng
+router.put(
+  "/update",
+  authMiddleware,
+  upload.single("avatar"), 
+  async (req, res) => {
+    const { name, email, phone, address } = req.body; 
+    let avatarPath = null;
 
+    // Nếu có file tải lên, lưu đường dẫn file
+    if (req.file) {
+      avatarPath = `http://localhost:5000/uploads/${req.file.filename}`;
+    }    
+
+    try {
+      const updatedData = {
+        name,
+        email,
+        phone,
+        address,
+      };
+
+      // Nếu có avatar thì thêm vào dữ liệu cập nhật
+      if (avatarPath) {
+        updatedData.avatar = avatarPath;
+      }
+
+      const updatedUser = await User.findByIdAndUpdate(
+        req.user.id,
+        updatedData,
+        { new: true }
+      );
+
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      res.json({
+        message: "Cập nhật thông tin thành công!",
+        user: updatedUser,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Error updating user", error: error.message });
+    }
+  }
+);
 module.exports = router;

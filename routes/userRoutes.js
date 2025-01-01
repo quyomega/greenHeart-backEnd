@@ -108,38 +108,45 @@ router.get("/profile", authMiddleware, async (req, res) => {
 router.put(
   "/update",
   authMiddleware,
-  upload.single("avatar"), 
+  upload.single("avatar"), // Xử lý tải lên file
   async (req, res) => {
-    const { name, email, phone, address } = req.body; 
+    const { name, email, phone, address } = req.body;
     let avatarPath = null;
 
-    // Nếu có file tải lên, lưu đường dẫn file
-    if (req.file) {
-      avatarPath = `http://localhost:5000/uploads/${req.file.filename}`;
-    }    
-
     try {
-      const updatedData = {
-        name,
-        email,
-        phone,
-        address,
-      };
+      // Lấy thông tin người dùng hiện tại
+      const user = await User.findById(req.user.id);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
 
-      // Nếu có avatar thì thêm vào dữ liệu cập nhật
+      // Nếu có file tải lên, lưu đường dẫn file mới
+      if (req.file) {
+        avatarPath = `http://localhost:5000/uploads/${req.file.filename}`;
+
+        // Xóa ảnh cũ nếu có
+        if (user.avatar) {
+          const oldAvatarPath = path.join(
+            __dirname,
+            "../uploads",
+            path.basename(user.avatar) // Chỉ lấy tên file từ URL lưu trong DB
+          );
+          if (fs.existsSync(oldAvatarPath)) {
+            fs.unlinkSync(oldAvatarPath); // Xóa file cũ
+          }
+        }
+      }
+
+      // Chuẩn bị dữ liệu cập nhật
+      const updatedData = { name, email, phone, address };
       if (avatarPath) {
         updatedData.avatar = avatarPath;
       }
 
-      const updatedUser = await User.findByIdAndUpdate(
-        req.user.id,
-        updatedData,
-        { new: true }
-      );
-
-      if (!updatedUser) {
-        return res.status(404).json({ message: "User not found" });
-      }
+      // Cập nhật thông tin người dùng
+      const updatedUser = await User.findByIdAndUpdate(req.user.id, updatedData, {
+        new: true,
+      });
 
       res.json({
         message: "Cập nhật thông tin thành công!",

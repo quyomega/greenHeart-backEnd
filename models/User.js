@@ -21,11 +21,13 @@ const UserSchema = new mongoose.Schema(
       default: "user", // Mặc định là "user"
     },
     points: { type: Number, default: 0 },
-    level: { type: String, default: "Tân Binh" },
+    level: { type: Number, default: 1 },
     phone: { type: String, default: 0 },
     address: { type: String, default: 0 },
     avatar: { type: String, default: 0 },
-    organizations: [{ type: mongoose.Schema.Types.ObjectId, ref: "Organization" }],
+    organizations: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "Organization" },
+    ],
   },
   { timestamps: true }
 );

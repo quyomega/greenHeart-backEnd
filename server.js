@@ -13,8 +13,7 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cors());
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-app.use("/api/organizations", organizationRoutes);
+
 // MongoDB Connection
 mongoose
   .connect(process.env.MONGO_URI, {
@@ -27,6 +26,8 @@ mongoose
 // Routes
 app.use("/api/users", userRoutes);
 app.use("/api/activities", activityRoutes);
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/api/organizations", organizationRoutes);
 
 // Server
 const PORT = process.env.PORT || 5000;

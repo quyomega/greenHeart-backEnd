@@ -2,24 +2,10 @@ const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: true,
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    password: {
-      type: String,
-      required: true,
-    },
-    role: {
-      type: String,
-      enum: ["user", "admin"], // Chỉ cho phép 2 giá trị
-      default: "user", // Mặc định là "user"
-    },
+    name: {type: String,required: true},
+    email: {type: String,required: true,unique: true},
+    password: {type: String,required: true},
+    role: {type: String,enum: ["user", "admin"],default: "user"},
     points: { type: Number, default: 0 },
     level: { type: Number, default: 1 },
     phone: { type: String, default: 0 },

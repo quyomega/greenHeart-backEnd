@@ -26,7 +26,8 @@ exports.recordActivity = async (req, res) => {
     if (points > 0) {
       user.points += points; // Tăng điểm khả dụng
       user.totalPoints += points; // Tăng tổng điểm
-      user.level = Math.floor(user.totalPoints / 100) + 1; // Tính cấp độ từ tổng điểm
+      user.level = Math.floor(user.totalPoints / 100) ; 
+      const nextLevelPoints = ((user.level)+1) * 100 - user.totalPoints; 
     } else {
       // Nếu điểm âm (giảm), chỉ giảm điểm khả dụng
       if (user.points + points < 0) {
@@ -43,7 +44,6 @@ exports.recordActivity = async (req, res) => {
     res.status(500).json({ message: "Lỗi server", error: err.message });
   }
 };
-
 
 // Lấy tất cả hoạt động của user
 exports.getActivities = async (req, res) => {

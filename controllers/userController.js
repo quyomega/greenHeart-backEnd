@@ -70,6 +70,7 @@ exports.getProfile = async (req, res) => {
       name: user.name,
       email: user.email,
       points: user.points,
+      totalPoints: user.totalPoints,
       level: user.level,
       phone: user.phone,
       address: user.address,

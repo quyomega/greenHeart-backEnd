@@ -1,6 +1,7 @@
 const Activity = require("../models/Activity");
 const User = require("../models/User");
 const ActivityType = require("../models/ActivityType");
+
 // Ghi nhận hoạt động
 exports.recordActivity = async (req, res) => {
   const { userId, type } = req.body;
@@ -60,24 +61,10 @@ exports.getLeaderboard = async (req, res) => {
 
   try {
     const query = {};
-
-    if (filter === "organization" && userId) {
-      // Lấy thông tin người dùng để xác định các tổ chức mà họ tham gia
-      const user = await User.findById(userId).select("organizations");
-
-      if (user && user.organizations.length > 0) {
-        query.organizations = { $in: user.organizations }; // Lọc theo các tổ chức người dùng tham gia
-      } else {
-        return res.status(400).json({ message: "Người dùng không tham gia tổ chức nào" });
-      }
-    }
-
-    // Lấy danh sách người dùng theo điểm
     const leaderboard = await User.find(query)
-      .sort({ points: -1 })
-      .select("name points level email organizations")
+      .sort({ totalPoints: -1 })
+      .select("name totalPoints level email organizations")
       .limit(10);
-
     res.status(200).json({ leaderboard });
   } catch (err) {
     res.status(500).json({ message: "Lỗi server", error: err.message });

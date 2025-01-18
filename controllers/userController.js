@@ -122,3 +122,26 @@ exports.updateProfile = async (req, res) => {
     res.status(500).json({ message: "Error updating user", error: error.message });
   }
 };
+// Lấy thông tin tất cả tài khoản
+exports.getAllUsers = async (req, res) => {
+  try {
+    // Tìm tất cả người dùng trong cơ sở dữ liệu
+    const users = await User.find({}, "name email points totalPoints level phone address avatar role");
+
+    // Kiểm tra nếu không có tài khoản nào
+    if (users.length === 0) {
+      return res.status(404).json({ message: "Không có tài khoản nào trong hệ thống." });
+    }
+
+    res.status(200).json({
+      message: "Lấy thông tin tất cả tài khoản thành công!",
+      users,
+    });
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách tài khoản:", error.message);
+    res.status(500).json({
+      message: "Có lỗi xảy ra khi lấy thông tin tài khoản.",
+      error: error.message,
+    });
+  }
+};

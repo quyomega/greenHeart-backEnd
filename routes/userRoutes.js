@@ -6,6 +6,7 @@ const {
   login,
   getProfile,
   updateProfile,
+  getAllUsers,
 } = require("../controllers/userController");
 
 const router = express.Router();
@@ -20,5 +21,8 @@ router.get("/profile", authMiddleware, getProfile);
 
 // Chỉnh sửa thông tin cá nhân
 router.put("/update", authMiddleware, upload.single("avatar"), updateProfile);
+
+//Lấy thông tin của tất cả các tài khoản
+router.get("/allprofile", authMiddleware, getAllUsers);
 
 module.exports = router;

@@ -76,7 +76,6 @@ exports.addUserToOrganization = async (req, res) => {
 // Lấy danh sách tổ chức của người dùng
 exports.getUserOrganizations = async (req, res) => {
   const userId = req.user.id;
-
   try {
     // Tìm người dùng và lấy danh sách tổ chức của họ
     const user = await User.findById(userId).populate("organizations");

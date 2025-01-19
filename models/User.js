@@ -22,9 +22,11 @@ const UserSchema = new mongoose.Schema(
     },
     dailyMissions: [
       {
-        missionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Mission' },
-        status: { type: String, enum: ['pending', 'completed'], default: 'pending' },
-        completedAt: { type: Date }
+        missionId: { type: mongoose.Schema.Types.ObjectId, ref: "Mission" },
+        status: { type: String, enum: ["pending", "completed"], default: "pending" },
+        assignedAt: { type: Date, default: Date.now }, // Thời gian gán nhiệm vụ
+        expiresAt: { type: Date }, // Thời gian hết hạn
+        completedAt: { type: Date },
       }
     ],
   },

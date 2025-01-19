@@ -10,6 +10,7 @@ const activityRoutes = require("./routes/activityRoutes");
 const organizationRoutes = require("./routes/organizationRoutes");
 const activityTypeRoutes = require("./routes/activityTypeRoutes");
 const missionRoutes = require("./routes/missionRoutes");
+const { refreshDailyMissions } = require("./controllers/missionController");
 // Load .env file
 dotenv.config();
 //Các tuyến đường
@@ -34,23 +35,18 @@ mongoose
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 // Tác vụ reset nhiệm vụ hàng ngày
-cron.schedule("0 0 * * *", async () => {
-  try {
-    console.log("Đang reset nhiệm vụ hằng ngày...");
-    const users = await User.find();
-
-    for (const user of users) {
-      // Reset trạng thái các nhiệm vụ về "pending"
-      user.dailyMissions = user.dailyMissions.map((mission) => ({
-        ...mission,
-        status: "pending",
-        completedAt: null,
-      }));
-
-      await user.save();
+cron.schedule(
+  "0 0 * * *",
+  async () => {
+    try {
+      console.log("Đang làm mới nhiệm vụ hằng ngày...");
+      await refreshDailyMissions();
+      console.log("Hoàn thành làm mới nhiệm vụ hằng ngày.");
+    } catch (error) {
+      console.error("Lỗi khi làm mới nhiệm vụ hằng ngày:", error.message);
     }
-    console.log("Nhiệm vụ hằng ngày đã được reset thành công!");
-  } catch (error) {
-    console.error("Lỗi khi reset nhiệm vụ hằng ngày:", error);
+  },
+  {
+    timezone: "Asia/Ho_Chi_Minh", // Múi giờ Việt Nam
   }
-});
+);

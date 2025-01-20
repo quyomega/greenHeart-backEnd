@@ -18,10 +18,10 @@ router.post("/assign-daily", authMiddleware, assignDailyMissions);
 // Route để đánh dấu nhiệm vụ hoàn thành
 router.post("/complete", authMiddleware, completeMission);
 
-// Lấy thông tin nhiệm vụ tất cả người dùng
+// Lấy thông tin nhiệm vụ người dùng
 router.get("/daily-missions", authMiddleware, getUserDailyMissions);
 
-// Lấy thông tin nhiệm vụ người dùng
+// Lấy thông tin nhiệm vụ tất cả người dùng
 router.get("/all-daily-missions", authMiddleware, getAllUserDailyMissions);
 
 module.exports = router;

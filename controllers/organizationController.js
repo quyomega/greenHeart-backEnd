@@ -86,7 +86,7 @@ exports.getUserOrganizations = async (req, res) => {
   }
 };
 exports.getOrganizationDetails = async (req, res) => {
-    const { orgId } = req.params; // Lấy id tổ chức từ tham số URL
+    const { orgId } = req.params; 
   
     try {
       const organization = await Organization.findById(orgId).populate("members");

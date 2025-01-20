@@ -145,3 +145,24 @@ exports.getAllUsers = async (req, res) => {
     });
   }
 };
+// Xóa người dùng
+exports.deleteUser = async (req, res) => {
+  const userId = req.params.userId; 
+  try {
+    // Kiểm tra xem người dùng có tồn tại không
+    const _id = await User.findById(userId);
+    if (!_id) {
+      return res.status(404).json({ message: "Người dùng không tồn tại" });
+    }
+
+    // Xóa người dùng
+    await User.findByIdAndDelete(_id);
+
+    res.status(200).json({
+      message: "Xóa người dùng thành công",
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Lỗi khi xóa người dùng", error: err.message });
+  }
+};

@@ -8,8 +8,8 @@ const {
 
 const router = express.Router();
 
-// Ghi nhận hoạt động
-router.post("/", authMiddleware, recordActivity);
+// Ghi nhận hoạt động xanh
+router.post("/record", authMiddleware, recordActivity);
 
 // Lấy danh sách hoạt động của user
 router.get("/", authMiddleware, getActivities);

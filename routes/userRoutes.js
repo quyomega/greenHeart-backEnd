@@ -7,6 +7,7 @@ const {
   getProfile,
   updateProfile,
   getAllUsers,
+  deleteUser,
 } = require("../controllers/userController");
 
 const router = express.Router();
@@ -24,5 +25,8 @@ router.put("/update", authMiddleware, upload.single("avatar"), updateProfile);
 
 //Lấy thông tin của tất cả các tài khoản
 router.get("/allprofile", authMiddleware, getAllUsers);
+
+// Xóa người dùng
+router.delete("/delete/:userId", authMiddleware, deleteUser);
 
 module.exports = router;

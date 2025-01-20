@@ -23,6 +23,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/organizations", organizationRoutes);
 app.use("/api/activitytype", activityTypeRoutes);
 app.use("/api/missions", missionRoutes);
+
 // MongoDB Connection
 mongoose
   .connect(process.env.MONGO_URI, {
